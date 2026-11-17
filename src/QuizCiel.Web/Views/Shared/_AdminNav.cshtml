@@ -1,0 +1,13 @@
+@{
+    var currentPath = Context.Request.Path.Value ?? string.Empty;
+    string ButtonStyleFor(string sectionPath) => currentPath.Equals(sectionPath, StringComparison.OrdinalIgnoreCase)
+        ? "btn-app btn-app--small"
+        : "btn-app btn-app--secondary btn-app--small";
+}
+<nav class="d-flex flex-wrap gap-2 mb-4">
+    <a class="@ButtonStyleFor("/admin")" href="/admin">Resumen</a>
+    <a class="@ButtonStyleFor("/admin/prizes")" href="/admin/prizes">Premios a pagar</a>
+    <a class="@ButtonStyleFor("/admin/games")" href="/admin/games">Partidas</a>
+    <a class="@ButtonStyleFor("/admin/categories")" href="/admin/categories">Categorías y preguntas</a>
+    <a class="@ButtonStyleFor("/admin/rounds")" href="/admin/rounds">Rondas y premios</a>
+</nav>

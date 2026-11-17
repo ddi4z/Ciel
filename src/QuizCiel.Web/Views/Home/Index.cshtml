@@ -1,0 +1,46 @@
+﻿@model HomeViewModel
+@{
+    ViewData["Title"] = "Inicio";
+    var isAdministrator = User.IsInRole(AppRoles.Admin);
+    var participation = Model.Participation;
+}
+<div class="row g-4">
+    <div class="col-lg-7">
+        <section class="panel">
+            <h1 class="h3 mb-3">¿Cuánto te atreves a ganar?</h1>
+            <p class="text-subtle">
+                Responde @GameRules.TotalRounds rondas de dificultad creciente. Cada acierto suma su premio.
+                Antes de responder puedes retirarte y llevarte lo acumulado; si fallas o se acaba el tiempo, sales sin premio.
+                <strong>Cada persona puede participar una sola vez.</strong>
+            </p>
+
+            @if (!Model.IsGameReady && participation?.HasPlayed != true)
+            {
+                <div class="flash flash--warning mt-4 mb-0">
+                    El juego todavía no está configurado. Un administrador debe completar las categorías, preguntas y premios.
+                </div>
+            }
+            else if (isAdministrator)
+            {
+                <p class="mt-4 mb-0">Estás conectado como administrador. <a href="/admin">Ir al panel de administración</a>.</p>
+            }
+            else if (participation is null)
+            {
+                <div class="d-flex flex-wrap gap-2 mt-4">
+                    <a class="btn-app" href="/account/register">Registrarme para jugar</a>
+                    <a class="btn-app btn-app--secondary" href="/account/login">Ya tengo cuenta</a>
+                </div>
+            }
+            else
+            {
+                <partial name="_Participation" model="participation" />
+            }
+        </section>
+    </div>
+    <div class="col-lg-5">
+        <section class="panel">
+            <h2 class="panel-title">Premios por ronda</h2>
+            <partial name="_PrizeLadder" model="Model.PrizeLadder" />
+        </section>
+    </div>
+</div>

@@ -1,0 +1,55 @@
+@model RoundSettingsFormViewModel
+@{
+    ViewData["Title"] = "Rondas y premios";
+}
+<partial name="_AdminNav" />
+
+<section class="panel">
+    <h1 class="h4">Rondas y premios</h1>
+    <p class="text-subtle">
+        Las @GameRules.TotalRounds rondas se guardan juntas. Cada ronda debe pagar más que la anterior (la ronda @GameRules.TotalRounds tiene el premio mayor)
+        y el tiempo debe estar entre @GameRules.MinimumTimeLimitSeconds y @GameRules.MaximumTimeLimitSeconds segundos.
+        Los cambios aplican a las preguntas nuevas; las partidas en curso conservan el premio y el tiempo con que se les hizo cada pregunta.
+    </p>
+
+    <form method="post" action="/admin/rounds">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="validation-summary-errors mb-2"></div>
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>Ronda (nivel)</th>
+                        <th>Premio (COP)</th>
+                        <th>Tiempo (segundos)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (var rowIndex = 0; rowIndex < Model.Rounds.Count; rowIndex++)
+                    {
+                        <tr>
+                            <td>
+                                @Model.Rounds[rowIndex].RoundNumber
+                                <input type="hidden" asp-for="Rounds[rowIndex].RoundNumber" />
+                            </td>
+                            <td>
+                                <input asp-for="Rounds[rowIndex].Prize" type="number" min="1" step="1" class="form-control" />
+                                <span asp-validation-for="Rounds[rowIndex].Prize" class="field-validation-error"></span>
+                            </td>
+                            <td>
+                                <input asp-for="Rounds[rowIndex].TimeLimitSeconds" type="number"
+                                       min="@GameRules.MinimumTimeLimitSeconds" max="@GameRules.MaximumTimeLimitSeconds" class="form-control" />
+                                <span asp-validation-for="Rounds[rowIndex].TimeLimitSeconds" class="field-validation-error"></span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <button type="submit" class="btn-app">Guardar rondas</button>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

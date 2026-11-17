@@ -1,0 +1,32 @@
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Ingresar";
+}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <section class="panel">
+            <h1 class="h4 mb-3">Ingresar</h1>
+            <form method="post" action="/account/login">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="ReturnUrl" />
+                <div asp-validation-summary="ModelOnly" class="validation-summary-errors mb-2"></div>
+                <div class="mb-3">
+                    <label asp-for="Username" class="form-label"></label>
+                    <input asp-for="Username" class="form-control" autocomplete="username" autofocus />
+                    <span asp-validation-for="Username" class="field-validation-error"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label"></label>
+                    <input asp-for="Password" class="form-control" autocomplete="current-password" />
+                    <span asp-validation-for="Password" class="field-validation-error"></span>
+                </div>
+                <button type="submit" class="btn-app w-100">Ingresar</button>
+            </form>
+            <p class="small mt-3 mb-0">¿No tienes cuenta? <a href="/account/register">Regístrate</a></p>
+        </section>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

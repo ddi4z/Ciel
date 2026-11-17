@@ -1,0 +1,12 @@
+@{
+    var successMessage = TempData[AppController.SuccessMessageKey] as string;
+    var errorMessage = TempData[AppController.ErrorMessageKey] as string;
+}
+@if (!string.IsNullOrEmpty(successMessage))
+{
+    <div class="flash flash--success" role="status">@successMessage</div>
+}
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="flash flash--error" role="alert">@errorMessage</div>
+}

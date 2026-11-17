@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- Public types and properties are self-describing; every function must still carry its own XML doc. -->
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <UserSecretsId>30f0e759-4876-485d-9cf2-4f455c44465d</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.15" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.15" />
+    <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="3.0.114" />
+    <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
+  </ItemGroup>
+
+  <!--
+    LibMan (libman.json) downloads the front-end libraries into wwwroot/lib at the start of every build, like
+    "npm install". On a clean checkout that folder did not exist when the project was evaluated, so the files
+    are added here as content; otherwise they would be left out of the static assets manifest and return 404.
+  -->
+  <Target Name="IncludeRestoredLibrariesAsContent" AfterTargets="LibraryManagerRestore">
+    <ItemGroup>
+      <Content Include="wwwroot\lib\**" Exclude="@(Content)" />
+    </ItemGroup>
+  </Target>
+
+</Project>

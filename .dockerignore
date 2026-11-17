@@ -1,0 +1,11 @@
+**/bin/
+**/obj/
+**/logs/
+**/wwwroot/lib/
+tests/
+docs/
+.git/
+.vs/
+.vscode/
+.env
+*.md

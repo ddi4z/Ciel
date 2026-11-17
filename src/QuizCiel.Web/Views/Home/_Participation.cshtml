@@ -1,0 +1,36 @@
+@model ParticipationViewModel
+<div class="mt-4">
+    <p class="mb-3">
+        Hola, <strong>@Model.FullName</strong> <span class="text-subtle">(C.C. @Model.MaskedDocumentNumber)</span>
+    </p>
+
+    @if (!Model.HasPlayed)
+    {
+        <form method="post" action="/game/start">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn-app">Empezar mi partida</button>
+        </form>
+    }
+    else if (Model.IsPlaying)
+    {
+        <a class="btn-app" href="/game/@Model.GameId">Continuar mi partida</a>
+    }
+    else
+    {
+        <div class="panel">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+                <div>
+                    <div class="game-stat-label">Tu premio</div>
+                    <div class="result-prize">@DisplayFormat.Money(Model.PrizeOwed)</div>
+                    <span class="status-badge @DisplayFormat.StatusCssClass(Model.Status!.Value)">@DisplayFormat.StatusLabel(Model.Status.Value)</span>
+                </div>
+                <a class="btn-app btn-app--secondary" href="/game/@Model.GameId">Ver detalle de mi partida</a>
+            </div>
+            <p class="text-subtle small mt-3 mb-0">
+                @(Model.PrizeOwed > 0
+                    ? "El premio se paga a nombre del titular de la cédula registrada."
+                    : "Ya participaste. Gracias por jugar.")
+            </p>
+        </div>
+    }
+</div>

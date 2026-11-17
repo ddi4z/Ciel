@@ -1,0 +1,327 @@
+html {
+    font-size: 15px;
+}
+
+body {
+    background: var(--color-background);
+    color: var(--color-text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+a {
+    color: var(--color-brand);
+}
+
+a:hover {
+    color: var(--color-brand-strong);
+}
+
+.form-control:focus,
+.form-select:focus,
+.form-check-input:focus,
+.btn-app:focus-visible {
+    border-color: var(--color-brand);
+    box-shadow: 0 0 0 0.2rem var(--color-focus-ring);
+    outline: none;
+}
+
+.form-check-input:checked {
+    background-color: var(--color-brand);
+    border-color: var(--color-brand);
+}
+
+.field-validation-error,
+.validation-summary-errors {
+    color: var(--color-danger);
+}
+
+/* Header and footer */
+.app-header {
+    background: var(--color-brand);
+    color: var(--color-on-brand);
+}
+
+.app-header a,
+.app-header .nav-link,
+.app-header .btn-link {
+    color: var(--color-on-brand);
+    text-decoration: none;
+}
+
+.app-header .nav-link:hover {
+    opacity: 0.85;
+}
+
+.app-brand {
+    font-weight: 700;
+    font-size: 1.25rem;
+    letter-spacing: 0.02em;
+}
+
+.app-footer {
+    margin-top: auto;
+    border-top: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    background: var(--color-surface);
+}
+
+/* Panels */
+.panel {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 8px var(--color-shadow);
+    padding: 1.5rem;
+}
+
+.panel-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.text-subtle {
+    color: var(--color-text-muted);
+}
+
+/* Buttons */
+.btn-app {
+    display: inline-block;
+    border: 1px solid var(--color-brand);
+    background: var(--color-brand);
+    color: var(--color-on-brand);
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-app:hover {
+    background: var(--color-brand-strong);
+    color: var(--color-on-brand);
+}
+
+.btn-app:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-app--secondary {
+    background: var(--color-surface);
+    color: var(--color-brand);
+}
+
+.btn-app--secondary:hover {
+    background: var(--color-brand-soft);
+    color: var(--color-brand-strong);
+}
+
+.btn-app--danger {
+    background: var(--color-surface);
+    border-color: var(--color-danger);
+    color: var(--color-danger);
+}
+
+.btn-app--danger:hover {
+    background: var(--color-danger-soft);
+    color: var(--color-danger);
+}
+
+.btn-app--small {
+    padding: 0.25rem 0.6rem;
+    font-size: 0.85rem;
+}
+
+/* Flash messages */
+.flash {
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+}
+
+.flash--success {
+    background: var(--color-success-soft);
+    border-color: var(--color-success);
+    color: var(--color-success);
+}
+
+.flash--error {
+    background: var(--color-danger-soft);
+    border-color: var(--color-danger);
+    color: var(--color-danger);
+}
+
+.flash--warning {
+    background: var(--color-warning-soft);
+    border-color: var(--color-warning);
+    color: var(--color-warning);
+}
+
+/* Status badges */
+.status-badge {
+    display: inline-block;
+    border-radius: 999px;
+    padding: 0.15rem 0.65rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.status-badge--success {
+    background: var(--color-success-soft);
+    color: var(--color-success);
+}
+
+.status-badge--danger {
+    background: var(--color-danger-soft);
+    color: var(--color-danger);
+}
+
+.status-badge--info {
+    background: var(--color-info-soft);
+    color: var(--color-info);
+}
+
+.status-badge--neutral {
+    background: var(--color-surface-alt);
+    color: var(--color-text-muted);
+}
+
+/* Prize ladder */
+.prize-ladder {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 0.4rem;
+}
+
+.prize-step {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    background: var(--color-surface-alt);
+    color: var(--color-text-muted);
+}
+
+.prize-step--completed {
+    background: var(--color-success-soft);
+    color: var(--color-success);
+}
+
+.prize-step--current {
+    background: var(--color-prize-soft);
+    color: var(--color-prize);
+    font-weight: 700;
+    border: 1px solid var(--color-prize);
+}
+
+.prize-amount {
+    color: var(--color-prize);
+    font-weight: 700;
+}
+
+/* Game screen */
+.game-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.game-stat-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+}
+
+.game-stat-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.question-text {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 1rem 0 1.5rem;
+}
+
+.answer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 0.75rem;
+}
+
+.answer-choice {
+    width: 100%;
+    text-align: left;
+    padding: 1rem;
+    border-radius: 0.6rem;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-text);
+    font-size: 1.05rem;
+    cursor: pointer;
+}
+
+.answer-choice:hover:not(:disabled) {
+    border-color: var(--color-brand);
+    background: var(--color-brand-soft);
+}
+
+.answer-choice:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.answer-letter {
+    font-weight: 700;
+    color: var(--color-brand);
+    margin-right: 0.5rem;
+}
+
+.round-timer {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--color-brand);
+}
+
+.round-timer--urgent {
+    color: var(--color-danger);
+}
+
+/* Result screen */
+.result-prize {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--color-prize);
+}
+
+.answer-correct {
+    color: var(--color-success);
+    font-weight: 600;
+}
+
+.answer-wrong {
+    color: var(--color-danger);
+    font-weight: 600;
+}
+
+/* Admin */
+.readiness-ok {
+    color: var(--color-success);
+    font-weight: 600;
+}
+
+.readiness-missing {
+    color: var(--color-danger);
+    font-weight: 600;
+}
+
+.row-inactive {
+    color: var(--color-text-muted);
+}

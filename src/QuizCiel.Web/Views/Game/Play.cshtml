@@ -1,0 +1,67 @@
+@model GamePlayViewModel
+@{
+    ViewData["Title"] = $"Ronda {Model.RoundNumber}";
+    var optionLetters = new[] { "A", "B", "C", "D" };
+}
+<div class="row g-4" data-game-screen>
+    <div class="col-lg-8">
+        <section class="panel">
+            <div class="game-stats">
+                <div>
+                    <div class="game-stat-label">Jugador</div>
+                    <div class="game-stat-value">@Model.PlayerName</div>
+                </div>
+                <div>
+                    <div class="game-stat-label">Ronda</div>
+                    <div class="game-stat-value">@Model.RoundNumber / @Model.TotalRounds</div>
+                </div>
+                <div>
+                    <div class="game-stat-label">Acumulado</div>
+                    <div class="game-stat-value prize-amount">@DisplayFormat.Money(Model.AccumulatedPrize)</div>
+                </div>
+                <div>
+                    <div class="game-stat-label">En juego</div>
+                    <div class="game-stat-value prize-amount">@DisplayFormat.Money(Model.PrizeAtStake)</div>
+                </div>
+                <div class="ms-auto text-end">
+                    <div class="game-stat-label">Tiempo</div>
+                    <div class="round-timer" data-seconds-remaining="@Model.SecondsRemaining">@Model.SecondsRemaining s</div>
+                </div>
+            </div>
+
+            <p class="question-text">@Model.QuestionText</p>
+
+            <form method="post" action="/game/@Model.GameId/answer">
+                @Html.AntiForgeryToken()
+                <div class="answer-grid">
+                    @for (var choiceIndex = 0; choiceIndex < Model.Choices.Count; choiceIndex++)
+                    {
+                        var answerChoice = Model.Choices[choiceIndex];
+                        <button type="submit" name="optionId" value="@answerChoice.Id" class="answer-choice">
+                            <span class="answer-letter">@optionLetters[choiceIndex]</span>@answerChoice.Text
+                        </button>
+                    }
+                </div>
+            </form>
+
+            <form method="post" action="/game/@Model.GameId/withdraw" class="mt-4 d-flex align-items-center gap-3">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn-app btn-app--danger"
+                        onclick="return confirm('¿Seguro que quieres retirarte? Te llevas lo acumulado.');">
+                    Retirarme con @DisplayFormat.Money(Model.AccumulatedPrize)
+                </button>
+                <span class="text-subtle small">Solo puedes retirarte antes de responder.</span>
+            </form>
+        </section>
+    </div>
+    <div class="col-lg-4">
+        <section class="panel">
+            <h2 class="panel-title">Escalera de premios</h2>
+            <partial name="_PrizeLadder" model="Model.PrizeLadder" />
+        </section>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/round-timer.js" asp-append-version="true"></script>
+}

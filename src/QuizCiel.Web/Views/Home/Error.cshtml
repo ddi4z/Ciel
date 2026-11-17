@@ -1,0 +1,24 @@
+@{
+    var statusCode = ViewData["StatusCode"] as int? ?? 500;
+    var errorTitle = statusCode switch
+    {
+        403 => "No tienes permiso para ver esta página",
+        404 => "No encontramos lo que buscas",
+        409 => "La acción no es válida en este momento",
+        _ => "Algo salió mal"
+    };
+    var errorDetail = statusCode switch
+    {
+        403 => "Ingresa con una cuenta que tenga acceso a esta sección.",
+        404 => "La página o la partida no existe.",
+        409 => "Los datos cambiaron mientras hacías la acción o ya existe un registro igual. Recarga la página e intenta de nuevo.",
+        _ => "Ocurrió un error inesperado. Ya quedó registrado; intenta de nuevo en unos minutos."
+    };
+    ViewData["Title"] = errorTitle;
+}
+<section class="panel text-center">
+    <p class="text-subtle mb-1">Error @statusCode</p>
+    <h1 class="h3">@errorTitle</h1>
+    <p class="text-subtle">@errorDetail</p>
+    <a class="btn-app mt-2" href="/">Volver al inicio</a>
+</section>

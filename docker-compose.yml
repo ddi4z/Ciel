@@ -1,0 +1,54 @@
+name: quizciel
+
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2025-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:?Define MSSQL_SA_PASSWORD en el archivo .env}
+    ports:
+      - "1433:1433"
+    volumes:
+      - quizciel-sqldata:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -C -Q \"SELECT 1\" -b -o /dev/null"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 15s
+
+  db-init:
+    image: mcr.microsoft.com/mssql/server:2025-latest
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+    volumes:
+      - ./database:/scripts:ro
+    entrypoint:
+      - /bin/bash
+      - -c
+      - >-
+        /opt/mssql-tools18/bin/sqlcmd -S db -U sa -P "$$MSSQL_SA_PASSWORD" -C -b -i /scripts/01_schema.sql &&
+        /opt/mssql-tools18/bin/sqlcmd -S db -U sa -P "$$MSSQL_SA_PASSWORD" -C -b -i /scripts/02_seed.sql
+    restart: "no"
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      db-init:
+        condition: service_completed_successfully
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__QuizDb: "Server=db,1433;Database=QuizCiel;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True"
+      AdminCredentials__Username: ${ADMIN_USERNAME:?Define ADMIN_USERNAME en el archivo .env}
+      AdminCredentials__Password: ${ADMIN_PASSWORD:?Define ADMIN_PASSWORD en el archivo .env}
+      Serilog__WriteTo__1__Args__path: /tmp/logs/quizciel-.log
+    ports:
+      - "8080:8080"
+
+volumes:
+  quizciel-sqldata:

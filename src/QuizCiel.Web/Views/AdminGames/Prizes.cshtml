@@ -1,0 +1,49 @@
+@model PrizesToPayViewModel
+@{
+    ViewData["Title"] = "Premios a pagar";
+}
+<partial name="_AdminNav" />
+
+<section class="panel">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+        <h1 class="h4 m-0">Premios a pagar</h1>
+        <div class="text-end">
+            <div class="game-stat-label">Total</div>
+            <div class="game-stat-value prize-amount">@DisplayFormat.Money(Model.TotalToPay)</div>
+        </div>
+    </div>
+    <p class="text-subtle">Partidas terminadas cuyo jugador ganó o se retiró con premio. La cédula completa identifica a quién se le paga.</p>
+
+    @if (Model.Games.Count == 0)
+    {
+        <p class="text-subtle m-0">Todavía no hay premios por pagar.</p>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Jugador</th>
+                        <th>Cédula</th>
+                        <th>Resultado</th>
+                        <th>Fecha</th>
+                        <th class="text-end">Premio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var prizeItem in Model.Games)
+                    {
+                        <tr>
+                            <td><a href="/game/@prizeItem.GameId">@prizeItem.PlayerFullName</a></td>
+                            <td>@prizeItem.PlayerDocumentNumber</td>
+                            <td><span class="status-badge @DisplayFormat.StatusCssClass(prizeItem.Status)">@DisplayFormat.StatusLabel(prizeItem.Status)</span></td>
+                            <td>@(prizeItem.EndedAt.HasValue ? DisplayFormat.LocalDateTime(prizeItem.EndedAt.Value) : string.Empty)</td>
+                            <td class="text-end prize-amount">@DisplayFormat.Money(prizeItem.FinalPrize ?? 0)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>

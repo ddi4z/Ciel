@@ -1,0 +1,53 @@
+@model AdminGamesViewModel
+@{
+    ViewData["Title"] = "Partidas";
+}
+<partial name="_AdminNav" />
+
+<section class="panel">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+        <h1 class="h4 m-0">Partidas</h1>
+        <form method="get" action="/admin/games" class="d-flex gap-2">
+            <input name="playerFilter" value="@Model.PlayerFilter" class="form-control" placeholder="Nombre o cédula" maxlength="@GameRules.PlayerNameMaxLength" />
+            <button type="submit" class="btn-app btn-app--secondary">Buscar</button>
+        </form>
+    </div>
+
+    @if (Model.Games.Count == 0)
+    {
+        <p class="text-subtle m-0">No hay partidas para mostrar.</p>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Inicio</th>
+                        <th>Jugador</th>
+                        <th>Cédula</th>
+                        <th>Estado</th>
+                        <th>Ronda</th>
+                        <th class="text-end">Premio</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var historyItem in Model.Games)
+                    {
+                        var shownPrize = historyItem.FinalPrize ?? historyItem.AccumulatedPrize;
+                        <tr>
+                            <td>@DisplayFormat.LocalDateTime(historyItem.StartedAt)</td>
+                            <td>@historyItem.PlayerFullName</td>
+                            <td>@DisplayFormat.MaskedDocument(historyItem.PlayerDocumentNumber)</td>
+                            <td><span class="status-badge @DisplayFormat.StatusCssClass(historyItem.Status)">@DisplayFormat.StatusLabel(historyItem.Status)</span></td>
+                            <td>@historyItem.RoundReached / @GameRules.TotalRounds</td>
+                            <td class="text-end prize-amount">@DisplayFormat.Money(shownPrize)</td>
+                            <td class="text-end"><a href="/game/@historyItem.GameId">Ver</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>

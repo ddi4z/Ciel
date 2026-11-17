@@ -1,0 +1,63 @@
+@model AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Administración";
+    var categoryByLevel = Model.Categories.ToDictionary(category => category.Level);
+}
+<partial name="_AdminNav" />
+
+<section class="panel mb-4">
+    <h1 class="h4">Estado del juego</h1>
+    @if (Model.Readiness.IsReady)
+    {
+        <div class="flash flash--success mb-0">El juego está listo: los jugadores pueden iniciar partidas.</div>
+    }
+    else
+    {
+        <div class="flash flash--warning">El juego no se puede iniciar hasta resolver:</div>
+        <ul class="mb-0">
+            @foreach (var readinessIssue in Model.Readiness.Issues)
+            {
+                <li>@readinessIssue</li>
+            }
+        </ul>
+    }
+</section>
+
+<section class="panel">
+    <h2 class="panel-title">Niveles</h2>
+    <div class="table-responsive">
+        <table class="table align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>Nivel / Ronda</th>
+                    <th>Categoría</th>
+                    <th>Preguntas activas</th>
+                    <th>Estado</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var levelReadiness in Model.Readiness.Levels)
+                {
+                    var hasCategory = categoryByLevel.TryGetValue(levelReadiness.Level, out var levelCategory);
+                    <tr>
+                        <td>@levelReadiness.Level</td>
+                        <td>@(hasCategory ? levelCategory!.Name : "Sin categoría")</td>
+                        <td>@levelReadiness.ActiveQuestionCount (mínimo @GameRules.MinimumActiveQuestionsPerCategory)</td>
+                        <td class="@(levelReadiness.IsReady ? "readiness-ok" : "readiness-missing")">@(levelReadiness.IsReady ? "Listo" : "Incompleto")</td>
+                        <td class="text-end">
+                            @if (hasCategory)
+                            {
+                                <a href="/admin/categories/@levelCategory!.Id/questions">Preguntas</a>
+                            }
+                            else
+                            {
+                                <a href="/admin/categories/create">Crear categoría</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>

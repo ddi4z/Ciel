@@ -1,0 +1,11 @@
+@model List<PrizeStepViewModel>
+<ol class="prize-ladder">
+    @foreach (var prizeStep in Model)
+    {
+        var stepModifier = prizeStep.IsCurrent ? "prize-step--current" : prizeStep.IsCompleted ? "prize-step--completed" : string.Empty;
+        <li class="prize-step @stepModifier">
+            <span>Ronda @prizeStep.RoundNumber</span>
+            <span>@DisplayFormat.Money(prizeStep.Prize)</span>
+        </li>
+    }
+</ol>

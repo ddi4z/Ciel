@@ -1,0 +1,59 @@
+@model GameResultViewModel
+@{
+    ViewData["Title"] = "Resultado";
+    var resultTitle = Model.Status switch
+    {
+        GameStatus.Won => "¡Ganaste el premio mayor!",
+        GameStatus.Withdrawn => "Te retiraste a tiempo",
+        GameStatus.Lost => "Respuesta incorrecta",
+        GameStatus.ForcedEnd => "Se acabó el tiempo",
+        _ => "Partida en curso"
+    };
+    var resultDetail = Model.Status switch
+    {
+        GameStatus.Won => $"respondiste correctamente las {GameRules.TotalRounds} rondas.",
+        GameStatus.Withdrawn => $"decidiste retirarte en la ronda {Model.RoundReached} y te llevas lo acumulado.",
+        GameStatus.Lost => $"fallaste en la ronda {Model.RoundReached} y pierdes lo acumulado.",
+        GameStatus.ForcedEnd => $"no respondiste a tiempo en la ronda {Model.RoundReached}; el juego terminó sin premio.",
+        _ => $"va en la ronda {Model.RoundReached}."
+    };
+    var prizeLabel = Model.Status == GameStatus.InProgress ? "Acumulado hasta ahora" : "Premio final";
+}
+<section class="panel text-center mb-4">
+    <span class="status-badge @DisplayFormat.StatusCssClass(Model.Status)">@DisplayFormat.StatusLabel(Model.Status)</span>
+    <h1 class="h3 mt-3">@resultTitle</h1>
+    <p class="text-subtle">@Model.PlayerName, @resultDetail</p>
+    <div class="game-stat-label">@prizeLabel</div>
+    <div class="result-prize">@DisplayFormat.Money(Model.FinalPrize)</div>
+    <a class="btn-app mt-3" href="@(User.IsInRole(AppRoles.Admin) ? "/admin/games" : "/")">Volver</a>
+</section>
+
+<section class="panel">
+    <h2 class="panel-title">Resumen de rondas</h2>
+    <div class="table-responsive">
+        <table class="table align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>Ronda</th>
+                    <th>Pregunta</th>
+                    <th>Tu respuesta</th>
+                    <th>Respuesta correcta</th>
+                    <th class="text-end">Premio</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var playedRound in Model.Rounds)
+                {
+                    var answerCssClass = playedRound.IsCorrect switch { true => "answer-correct", false => "answer-wrong", _ => "text-subtle" };
+                    <tr>
+                        <td>@playedRound.RoundNumber</td>
+                        <td>@playedRound.QuestionText</td>
+                        <td class="@answerCssClass">@(playedRound.SelectedOptionText ?? "Sin responder")</td>
+                        <td>@playedRound.CorrectOptionText</td>
+                        <td class="text-end">@DisplayFormat.Money(playedRound.Prize)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>

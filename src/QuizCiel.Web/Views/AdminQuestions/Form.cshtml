@@ -1,0 +1,59 @@
+@model QuestionFormViewModel
+@{
+    ViewData["Title"] = Model.Id is null ? "Nueva pregunta" : Model.IsReadOnly ? "Pregunta jugada" : "Editar pregunta";
+    var optionLetters = new[] { "A", "B", "C", "D" };
+}
+<partial name="_AdminNav" />
+
+<section class="panel">
+    <h1 class="h4 mb-1">@ViewData["Title"]</h1>
+    <p class="text-subtle">Categoría: @Model.CategoryName</p>
+
+    @if (Model.IsReadOnly)
+    {
+        <div class="flash flash--warning">Esta pregunta ya se usó en partidas, por eso es de solo lectura. Desactívala y crea una nueva si necesitas cambiarla.</div>
+    }
+
+    <form method="post" action="/admin/categories/@Model.CategoryId/questions/save">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="CategoryName" />
+        <div asp-validation-summary="ModelOnly" class="validation-summary-errors mb-2"></div>
+
+        <fieldset disabled="@Model.IsReadOnly">
+            <div class="mb-3">
+                <label asp-for="Text" class="form-label"></label>
+                <textarea asp-for="Text" class="form-control" rows="2"></textarea>
+                <span asp-validation-for="Text" class="field-validation-error"></span>
+            </div>
+
+            <p class="form-label mb-2">Opciones (marca la respuesta correcta)</p>
+            @for (var optionIndex = 0; optionIndex < GameRules.OptionsPerQuestion; optionIndex++)
+            {
+                <div class="input-group mb-2">
+                    <span class="input-group-text">
+                        <input class="form-check-input mt-0" type="radio" name="CorrectOptionIndex" value="@optionIndex"
+                               id="correct-option-@optionIndex" checked="@(Model.CorrectOptionIndex == optionIndex)"
+                               aria-label="Opción @optionLetters[optionIndex] es la correcta" />
+                    </span>
+                    <span class="input-group-text">@optionLetters[optionIndex]</span>
+                    <input class="form-control" name="OptionTexts[@optionIndex]" value="@Model.OptionTexts.ElementAtOrDefault(optionIndex)"
+                           maxlength="@GameRules.OptionTextMaxLength" required />
+                </div>
+            }
+            <span asp-validation-for="CorrectOptionIndex" class="field-validation-error"></span>
+        </fieldset>
+
+        <div class="d-flex gap-2 mt-4">
+            @if (!Model.IsReadOnly)
+            {
+                <button type="submit" class="btn-app">Guardar</button>
+            }
+            <a class="btn-app btn-app--secondary" href="/admin/categories/@Model.CategoryId/questions">Volver</a>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
